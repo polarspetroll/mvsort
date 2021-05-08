@@ -5,7 +5,7 @@ sort files in a directory from terminal
 ### Installation
 
 ```bash
-git clone github.com/polarspetroll/mvsort.git;cd mvsort;
+git clone https://github.com/polarspetroll/mvsort.git;cd mvsort;
 chmod +x install.sh
 ./install.sh
 ```
