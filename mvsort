@@ -1,0 +1,73 @@
+#!/usr/bin/env ruby
+require 'fileutils'
+arg = ARGV
+@dir = ARGV[0]
+if @dir == nil || @dir == "-h"
+	abort "Usage : mvsort [directory] options
+ Options:
+  -o output name
+  -k keep files
+					"
+elsif @dir == "mvsort"
+	@dir = "."
+end
+
+if arg.include?("-o")
+	outdir = arg[arg.index("-o") + 1]
+end
+if arg.include?("-k")
+	keep = true
+else
+	keep = false
+end
+
+#################################################################################
+def rename_keep(dn)
+	i = 1
+	if dn == nil
+		dn = "#{@dir}/sorted_output"
+	end
+	Dir.mkdir(dn)
+	begin
+	Dir.foreach(@dir) do |f|
+	  next if f == '.' || f == '..' || f == "mvsort.rb" || f == "sorted_output" || f == dn
+	  ext =  File.extname(f)
+	  FileUtils.cp("#{@dir}/#{f}", "#{dn}/" + i.to_s + ext)
+		i += 1
+	end
+rescue
+	abort "#{@dir} No such file or directory"
+end
+end
+#################################################################################
+def randall()
+	Dir.foreach(@dir) do |f|
+		next if f == '.' || f == '..' || f == "mvsort.rb"
+		ext = File.extname(f)
+		File.rename("#{@dir}/#{f}", "#{@dir}/#{rand(9999999).to_s}#{ext}")
+	end
+end
+#################################################################################
+def j_rename()
+	i = 1
+	randall()
+	begin
+	Dir.foreach(@dir) do |f|
+	  next if f == '.' || f == '..' || f == "mvsort.rb"
+	  ext =  File.extname(f)
+	  File.rename("#{@dir}/#{f}", "#{@dir}/#{i.to_s}#{ext}")
+		i += 1
+	end
+rescue
+	abort "#{@dir} No such file or directory"
+end
+end
+#################################################################################
+
+if keep == true
+	rename_keep(nil)
+elsif outdir != nil
+	rename_keep(outdir)
+else
+	j_rename()
+end
